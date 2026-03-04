@@ -1,0 +1,23 @@
+name: Feature Request / New Protocol Proposal
+description: Suggest an idea or a new protocol adapter for Kalpa
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for Kalpa? Want to see a new protocol adapter (like Kafka, Redis, WebRTC)? Let us know!
+  - type: textarea
+    id: problem
+    attributes:
+      label: The Problem or Use Case
+      description: Provide context. Why do you need this feature? What protocol pattern are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution or Protocol
+      description: Describe the feature or the adapter. If proposing an adapter, what transport class (REQUEST_RESPONSE, STREAM, PUBLISH_SUBSCRIBE, FIRE_AND_FORGET) does it belong to?
+    validations:
+      required: true

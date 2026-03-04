@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install Dependencies
+      run: npm ci
+      
+    - name: Type Check & Build
+      run: npm run build
+      
+    - name: Run Core & Adapter Tests
+      run: |
+        npx tsx --test packages/core/tests/core.test.ts packages/core/tests/backpressure.test.ts packages/core/tests/hotswap.test.ts packages/core/tests/integration.test.ts packages/core/tests/tcp.test.ts
+        npx tsx --test packages/core/tests/sse.test.ts
+        npx tsx --test packages/core/tests/grpc.test.ts

@@ -1,0 +1,41 @@
+name: Bug Report
+description: Create a report to help us improve Kalpa
+title: "[BUG] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible.
+  - type: input
+    id: version
+    attributes:
+      label: Kalpa Version
+      description: What version of Kalpa are you using? (e.g., 0.1.0)
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue? If using a YAML config, please paste a minimal version of it here.
+      placeholder: |
+        1. Run Kalpa with this config...
+        2. Send this HTTP POST request...
+        3. Observe the crash...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
