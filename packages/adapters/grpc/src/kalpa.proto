@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package kalpa;
+
+// Generic relay service — forwards any message as JSON-encoded bytes.
+// This allows Kalpa to bridge gRPC without requiring per-service proto files.
+
+message KalpaMessage {
+  string id = 1;
+  string source = 2;
+  string topic = 3;
+  bytes payload = 4;
+  map<string, string> metadata = 5;
+}
+
+message KalpaResponse {
+  string id = 1;
+  bool success = 2;
+  bytes payload = 3;
+  map<string, string> metadata = 4;
+}
+
+service KalpaRelay {
+  // Unary RPC — request-response
+  rpc Send (KalpaMessage) returns (KalpaResponse);
+
+  // Server streaming — subscribe to messages on a topic
+  rpc Subscribe (KalpaMessage) returns (stream KalpaMessage);
+}

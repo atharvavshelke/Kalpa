@@ -1,0 +1,54 @@
+# Kalpa Example: Multi-Protocol Bridge
+# HTTP REST → WebSocket + gRPC
+
+logLevel: info
+
+adapters:
+  rest-api:
+    type: http-server
+    port: 3000
+  
+  ws-broadcast:
+    type: websocket-server
+    port: 3001
+  
+  grpc-forward:
+    type: grpc-server
+    port: 50051
+  
+  tcp-logger:
+    type: tcp-server
+    port: 4000
+
+routes:
+  # HTTP POST → WebSocket broadcast
+  - id: rest-to-ws
+    from:
+      protocol: http
+      match:
+        method: POST
+        path: /events
+    to:
+      protocol: websocket
+      adapter: ws-broadcast
+      action: broadcast
+
+  # HTTP POST → gRPC (fan-out)
+  - id: rest-to-grpc
+    from:
+      protocol: http
+      match:
+        method: POST
+        path: /events
+    to:
+      protocol: grpc
+      adapter: grpc-forward
+
+  # TCP → WebSocket relay
+  - id: tcp-to-ws
+    from:
+      protocol: tcp
+    to:
+      protocol: websocket
+      adapter: ws-broadcast
+      action: broadcast

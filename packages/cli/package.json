@@ -1,0 +1,23 @@
+{
+    "name": "kalpa-cli",
+    "version": "0.1.0",
+    "description": "Kalpa CLI — run universal protocol bridges from YAML config",
+    "type": "module",
+    "bin": {
+        "kalpa": "./src/cli.ts"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "tsx src/cli.ts"
+    },
+    "dependencies": {
+        "@kalpa/core": "*",
+        "@kalpa/adapter-http": "*",
+        "@kalpa/adapter-websocket": "*",
+        "@kalpa/adapter-tcp": "*",
+        "@kalpa/adapter-sse": "*",
+        "@kalpa/adapter-mqtt": "*",
+        "@kalpa/adapter-grpc": "*",
+        "yaml": "^2.4.0"
+    }
+}

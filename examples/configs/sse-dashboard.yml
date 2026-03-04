@@ -1,0 +1,25 @@
+# Kalpa Example: SSE Dashboard
+# HTTP POST → SSE broadcast to all connected browsers
+
+logLevel: info
+
+adapters:
+  http:
+    type: http-server
+    port: 3000
+  
+  sse:
+    type: sse-server
+    port: 3002
+    path: /events
+
+routes:
+  - id: http-to-sse
+    from:
+      protocol: http
+      match:
+        method: POST
+    to:
+      protocol: sse
+      adapter: sse
+      action: broadcast

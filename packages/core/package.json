@@ -1,0 +1,18 @@
+{
+    "name": "@kalpa/core",
+    "version": "0.1.0",
+    "description": "Kalpa core engine — UME, Router, Registry, Transformer, Engine",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "npx tsx --test tests/**/*.test.ts"
+    },
+    "dependencies": {
+        "uuid": "^10.0.0"
+    },
+    "devDependencies": {
+        "@types/uuid": "^10.0.0"
+    }
+}

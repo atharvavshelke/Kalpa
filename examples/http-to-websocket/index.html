@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalpa — HTTP → WebSocket Bridge Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #e4e4e7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      color: #71717a;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      transition: background 0.3s;
+    }
+
+    .status-dot.connected {
+      background: #22c55e;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    }
+
+    .messages {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 1rem;
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .msg {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #27272a;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .msg:last-child { border-bottom: none; }
+
+    .msg-time {
+      color: #52525b;
+      margin-right: 0.5rem;
+    }
+
+    .msg-body {
+      color: #a78bfa;
+    }
+
+    .msg-system {
+      color: #71717a;
+      font-style: italic;
+    }
+
+    .empty {
+      color: #3f3f46;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+
+    .send-form {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .send-form input {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 8px;
+      color: #e4e4e7;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .send-form input:focus {
+      border-color: #818cf8;
+    }
+
+    .send-form button {
+      padding: 0.6rem 1.2rem;
+      background: linear-gradient(135deg, #818cf8, #a78bfa);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .send-form button:hover { opacity: 0.85; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔱 Kalpa</h1>
+    <p class="subtitle">HTTP → WebSocket Bridge Demo</p>
+
+    <div class="status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Disconnected</span>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="empty" id="emptyState">
+        Waiting for messages...<br>
+        <span style="font-size: 0.75rem; color: #27272a; margin-top: 0.5rem; display: block;">
+          POST to http://localhost:3000/messages to see them here
+        </span>
+      </div>
+    </div>
+
+    <form class="send-form" id="sendForm">
+      <input type="text" id="msgInput" placeholder="Send a message via HTTP POST..." autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const messagesEl = document.getElementById('messages');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const emptyState = document.getElementById('emptyState');
+    const sendForm = document.getElementById('sendForm');
+    const msgInput = document.getElementById('msgInput');
+
+    let ws;
+
+    function connect() {
+      ws = new WebSocket('ws://localhost:3001');
+
+      ws.onopen = () => {
+        statusDot.classList.add('connected');
+        statusText.textContent = 'Connected to ws://localhost:3001';
+      };
+
+      ws.onmessage = (event) => {
+        if (emptyState) emptyState.remove();
+
+        let data;
+        try { data = JSON.parse(event.data); }
+        catch { data = event.data; }
+
+        const msg = document.createElement('div');
+        msg.className = 'msg';
+
+        const time = new Date().toLocaleTimeString();
+        const bodyStr = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+
+        msg.innerHTML = `<span class="msg-time">${time}</span><span class="msg-body">${bodyStr}</span>`;
+        messagesEl.appendChild(msg);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      };
+
+      ws.onclose = () => {
+        statusDot.classList.remove('connected');
+        statusText.textContent = 'Disconnected — reconnecting...';
+        setTimeout(connect, 2000);
+      };
+
+      ws.onerror = () => {
+        ws.close();
+      };
+    }
+
+    // Send via HTTP POST (the message flows through Kalpa: HTTP → WS)
+    sendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = msgInput.value.trim();
+      if (!text) return;
+
+      try {
+        await fetch('http://localhost:3000/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        });
+        msgInput.value = '';
+      } catch (err) {
+        console.error('Failed to send:', err);
+      }
+    });
+
+    connect();
+  </script>
+</body>
+</html>

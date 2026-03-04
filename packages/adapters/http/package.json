@@ -1,0 +1,14 @@
+{
+    "name": "@kalpa/adapter-http",
+    "version": "0.1.0",
+    "description": "Kalpa HTTP/1.1 + HTTP/2 server adapter",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@kalpa/core": "*"
+    }
+}

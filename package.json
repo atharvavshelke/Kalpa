@@ -1,0 +1,25 @@
+{
+  "name": "kalpa",
+  "version": "0.1.0",
+  "description": "Kalpa (कल्प) — Universal Meta-Protocol Framework. The Express.js of protocol bridging.",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/core",
+    "packages/adapters/*",
+    "packages/cli"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npx tsx --test packages/core/tests/**/*.test.ts",
+    "test:integration": "npx tsx --test packages/core/tests/integration.test.ts",
+    "clean": "rm -rf packages/*/dist"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

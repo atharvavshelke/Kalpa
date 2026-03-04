@@ -1,0 +1,29 @@
+# Kalpa Example: HTTP → WebSocket Bridge
+# Run: npx tsx packages/cli/src/cli.ts start --config examples/configs/http-to-ws.yml
+
+logLevel: info
+
+adapters:
+  http:
+    type: http-server
+    port: 3000
+  
+  websocket:
+    type: websocket-server
+    port: 3001
+
+routes:
+  - id: http-to-ws-broadcast
+    from:
+      protocol: http
+      match:
+        method: POST
+        path: /messages
+    to:
+      protocol: websocket
+      adapter: websocket
+      action: broadcast
+    transforms:
+      - type: inject-header
+        bridged-from: http
+        bridged-at: "{{timestamp}}"

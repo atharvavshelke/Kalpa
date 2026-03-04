@@ -1,0 +1,14 @@
+{
+    "name": "@kalpa/adapter-tcp",
+    "version": "0.1.0",
+    "description": "Kalpa TCP/UDP raw socket adapter",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@kalpa/core": "*"
+    }
+}

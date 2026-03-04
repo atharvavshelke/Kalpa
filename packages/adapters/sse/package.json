@@ -1,0 +1,14 @@
+{
+    "name": "@kalpa/adapter-sse",
+    "version": "0.1.0",
+    "description": "Kalpa SSE (Server-Sent Events) adapter",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@kalpa/core": "*"
+    }
+}

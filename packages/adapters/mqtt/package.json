@@ -1,0 +1,15 @@
+{
+    "name": "@kalpa/adapter-mqtt",
+    "version": "0.1.0",
+    "description": "Kalpa MQTT adapter for IoT pub/sub messaging",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@kalpa/core": "*",
+        "mqtt": "^5.0.0"
+    }
+}
