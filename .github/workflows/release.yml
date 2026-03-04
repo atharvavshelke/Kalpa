@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags starting with "v" (e.g., v1.0.0)
+
+jobs:
+  test-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to create a GitHub Release
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for changelog generation
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Build Packages
+        run: npm run build
+
+      - name: Extract Changelog Content
+        id: changelog
+        shell: bash
+        run: |
+          # Simple extraction of the topmost version block from CHANGELOG.md
+          # This assumes the format follows "Keep a Changelog" strictly
+          VERSION=${GITHUB_REF#refs/tags/}
+          
+          # Use awk to print text between the current version heading and the next heading
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "release_notes<<$EOF" >> "$GITHUB_OUTPUT"
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\["ver"\\]" {flag=1; next}
+            $0 ~ "^## \\[" && flag {flag=0}
+            flag {print}
+          ' CHANGELOG.md >> "$GITHUB_OUTPUT"
+          echo "$EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.release_notes }}
+          generate_release_notes: true # Fallback if regex fails
+          draft: false
+          prerelease: false
