@@ -1,0 +1,30 @@
+# Kalpa IoT Dashboard Demo
+# Simulated sensors → HTTP POST → Kalpa → SSE → Live Browser Dashboard
+#
+# Run:
+#   Terminal 1: npx tsx packages/cli/src/cli.ts start --config examples/iot-dashboard/kalpa.yml
+#   Terminal 2: npx tsx examples/iot-dashboard/simulate.ts
+#   Browser:    open examples/iot-dashboard/dashboard.html
+
+logLevel: info
+
+adapters:
+  sensor-api:
+    type: http-server
+    port: 4000
+
+  live-feed:
+    type: sse-server
+    port: 4001
+    path: /stream
+
+routes:
+  - id: sensor-to-dashboard
+    from:
+      protocol: http
+      match:
+        method: POST
+    to:
+      protocol: sse
+      adapter: live-feed
+      action: broadcast
