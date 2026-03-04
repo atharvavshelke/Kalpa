@@ -26,8 +26,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Tests
-        run: npm test
+      - name: Run Core & Adapter Tests
+        run: |
+          npx tsx --test packages/core/tests/core.test.ts packages/core/tests/backpressure.test.ts packages/core/tests/hotswap.test.ts packages/core/tests/integration.test.ts packages/core/tests/tcp.test.ts
+          npx tsx --test packages/core/tests/sse.test.ts
+          npx tsx --test packages/core/tests/grpc.test.ts
 
       - name: Build Packages
         run: npm run build
