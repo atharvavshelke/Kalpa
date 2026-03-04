@@ -1,26 +1,66 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Environment
-.env
-.env.local
-
 # Logs
+logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
 # Coverage
 coverage/
+*.lcov
+.nyc_output/
+
+# Build directories and outputs
+dist/
+build/
+out/
+packages/*/dist/
+packages/*/build/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Tooling caches
+.npm/
+.eslintcache
+.stylelintcache
+.parcel-cache
+
+# Environment configurations
+.env
+.env.*
+!.env.example
+
+# IDEs, Editors, and OS files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*.swn
+.DS_Store
+*.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Temporary and local files
+tmp/
+temp/
